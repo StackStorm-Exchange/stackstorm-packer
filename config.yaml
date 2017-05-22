@@ -1,5 +1,0 @@
-### Place configuration data for your pack here.
----
-atlas_token: ""
-variables: {}
-#exec_path: "/opt/packer/bin/packer"
