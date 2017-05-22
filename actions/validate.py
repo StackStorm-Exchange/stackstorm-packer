@@ -7,5 +7,6 @@ class ValidateAction(BaseAction):
         if cwd:
             self.set_dir(cwd)
 
-        p = self.packer(packerfile)
+        p = self.packer(packerfile, exc=exclude, only=only, variables=variables,
+                        vars_file=variables_file)
         return p.validate(syntax_only=False)
