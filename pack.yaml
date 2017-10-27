@@ -2,7 +2,7 @@
 ref: packer
 name: packer
 description: Hashicorp Packer builder integration
-version: 0.3.0
+version: 0.3.1
 author: James Fryman
 email: james@stackstorm.com
 keywords:
