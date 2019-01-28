@@ -27,7 +27,7 @@ class PackerBaseActionTestCase(BaseActionTestCase):
         self._full_config = self.load_yaml('configs/full.yaml')
 
     def tearDown(self):
-        super(EncoreBaseActionTestCase, self).tearDown()
+        super(PackerBaseActionTestCase, self).tearDown()
         logging.disable(logging.NOTSET)  # enable logging
 
     def load_yaml(self, filename):
