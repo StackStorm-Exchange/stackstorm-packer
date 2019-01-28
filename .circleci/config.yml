@@ -122,9 +122,7 @@ workflows:
             - build_and_test_python27
           filters:
             branches:
-              only:
-                - master
-                - feature/packer_build_errors
+              only: master
   build_test_weekly:
     jobs:
       - build_and_test_python27
