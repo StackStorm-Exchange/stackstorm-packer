@@ -12,8 +12,8 @@ class BuildAction(BaseAction):
                         vars_file=variables_file)
 
         # If the packer build method fails. It only shows a small amount of data that
-        # is not always helpful depending on where the error is. This way all the packer
-        # information will be given the same as if the build succeeded
+        # is not always helpful depending on where the error is. In the except block
+        # we grab the whole output and return it.
         result = None
         try:
             p_result = p.build(parallel=parallel, debug=debug, force=force)
