@@ -19,7 +19,7 @@ class BuildAction(BaseAction):
             p_result = p.build(parallel=parallel, debug=debug, force=force)
             result = self.format_results(p_result.stdout)
         except Exception as e:
-            result = (False, self.format_results(e.stdout, True))
+            result = (False, self.format_results(e.stdout, True))  # pylint: disable=no-member
 
         return result
 
