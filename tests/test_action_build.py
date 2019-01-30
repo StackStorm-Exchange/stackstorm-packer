@@ -86,8 +86,8 @@ class BuildActionTestCase(PackerBaseActionTestCase):
 
         expected_result = "Test Build"
         mock_error = ErrorReturnCode(stdout=expected_result,
-                                    full_cmd="",
-                                    stderr="")
+                                    full_cmd="Test_cmd",
+                                    stderr="Test_stderr")
 
         mock_packer.return_value.build.side_effect = mock_error
 
