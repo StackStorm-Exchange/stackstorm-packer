@@ -14,6 +14,7 @@
 
 import yaml
 import logging
+
 from st2tests.base import BaseActionTestCase
 
 
@@ -23,8 +24,8 @@ class PackerBaseActionTestCase(BaseActionTestCase):
     def setUp(self):
         super(PackerBaseActionTestCase, self).setUp()
         logging.disable(logging.CRITICAL)  # disable logging
-        self._blank_config = self.load_yaml('configs/blank.yaml')
-        self._full_config = self.load_yaml('configs/full.yaml')
+        self._blank_config = self.load_yaml('blank.yaml')
+        self._full_config = self.load_yaml('full.yaml')
 
     def tearDown(self):
         super(PackerBaseActionTestCase, self).tearDown()

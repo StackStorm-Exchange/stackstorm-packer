@@ -13,37 +13,38 @@
 # See the License for the specific language governing permissions and
 
 import mock
-from sh import ErrorReturnCode
 
 from packer_base_action_test_case import PackerBaseActionTestCase
 from st2common.runners.base_action import Action
 from lib.actions import BaseAction
 
-from build import BuildAction
+from push import PushAction
 
 __all__ = [
-    'BuildActionTestCase'
+    'PushActionTestCase'
 ]
 
 
-class BuildActionTestCase(PackerBaseActionTestCase):
+class PushActionTestCase(PackerBaseActionTestCase):
     __test__ = True
-    action_cls = BuildAction
+    action_cls = PushAction
 
     def test_init(self):
         action = self.get_action_instance({})
-        self.assertIsInstance(action, BuildAction)
+        self.assertIsInstance(action, PushAction)
         self.assertIsInstance(action, BaseAction)
         self.assertIsInstance(action, Action)
 
     @mock.patch('lib.actions.BaseAction.packer')
     def test_run_success(self, mock_packer):
         action = self.get_action_instance(self.blank_config)
-        test_dict = {'packerfile': 'test/file/packer'}
+        expected_token = "Test Token"
+        test_dict = {'packerfile': 'test/file/packer',
+                    'name': 'test_name'}
+        action.atlas_token = expected_token
 
-        expected_result = "Test Build"
-        mock_build_return = mock.Mock(stdout=expected_result, status="success")
-        mock_packer.return_value.build.return_value = mock_build_return
+        expected_result = "Expected Result"
+        mock_packer.return_value.push.return_value = expected_result
 
         result = action.run(**test_dict)
         self.assertEqual(result, expected_result)
@@ -52,21 +53,23 @@ class BuildActionTestCase(PackerBaseActionTestCase):
                                             only=None,
                                             variables=None,
                                             vars_file=None)
-        mock_packer.return_value.build.assert_called_once_with(parallel=True,
-                                                              debug=False,
-                                                              force=False)
+        mock_packer.return_value.push.assert_called_once_with(test_dict['name'],
+                                                            message=None,
+                                                            token=expected_token)
 
     @mock.patch('lib.actions.BaseAction.packer')
     def test_run_success_with_input_overrides(self, mock_packer):
         action = self.get_action_instance(self.blank_config)
+        expected_token = "Test Token"
         test_dict = {'packerfile': 'test/file/packer',
-                    'debug': True,
+                    'name': 'test_name',
+                    'message': "test",
                     'exclude': True,
                     'variables': {'test': 'test'}}
+        action.atlas_token = expected_token
 
-        expected_result = "Test Build"
-        mock_build_return = mock.Mock(stdout=expected_result, status="success")
-        mock_packer.return_value.build.return_value = mock_build_return
+        expected_result = "Expected Result"
+        mock_packer.return_value.push.return_value = expected_result
 
         result = action.run(**test_dict)
         self.assertEqual(result, expected_result)
@@ -75,43 +78,44 @@ class BuildActionTestCase(PackerBaseActionTestCase):
                                             only=None,
                                             variables=test_dict['variables'],
                                             vars_file=None)
-        mock_packer.return_value.build.assert_called_once_with(parallel=True,
-                                                              debug=True,
-                                                              force=False)
+        mock_packer.return_value.push.assert_called_once_with(test_dict['name'],
+                                                            message=test_dict['message'],
+                                                            token=expected_token)
 
     @mock.patch('lib.actions.BaseAction.packer')
     def test_run_error(self, mock_packer):
         action = self.get_action_instance(self.blank_config)
-        test_dict = {'packerfile': 'test/file/packer'}
+        expected_token = "Test Token"
+        test_dict = {'packerfile': 'test/file/packer',
+                    'name': 'test_name'}
+        action.atlas_token = expected_token
 
-        expected_result = "Test Build"
-        mock_error = ErrorReturnCode(stdout=expected_result,
-                                    full_cmd="",
-                                    stderr="")
+        mock_packer.return_value.push.side_effect = Exception("ERROR")
 
-        mock_packer.return_value.build.side_effect = mock_error
-
-        result = action.run(**test_dict)
-        self.assertEqual(result, (False, expected_result))
+        with self.assertRaises(Exception):
+            action.run(**test_dict)
         mock_packer.assert_called_once_with(test_dict['packerfile'],
                                             exc=None,
                                             only=None,
                                             variables=None,
                                             vars_file=None)
+        mock_packer.return_value.push.assert_called_once_with(test_dict['name'],
+                                                            message=None,
+                                                            token=expected_token)
 
-    def test_format_results_success(self):
-        action = self.get_action_instance()
-        test_string = "\x1b[1;32mTest_string\x1b[0m"
-        expected_result = "Test_string"
+    @mock.patch('lib.actions.BaseAction.packer')
+    def test_run_value_error(self, mock_packer):
+        action = self.get_action_instance(self.blank_config)
+        test_dict = {'packerfile': 'test/file/packer',
+                    'name': 'test_name'}
 
-        result = action.format_results(test_string)
-        self.assertEqual(result, expected_result)
+        expected_result = "Expected Result"
+        mock_packer.return_value.push.return_value = expected_result
 
-    def test_format_results_failed(self):
-        action = self.get_action_instance()
-        test_string = ("\x1b[0;32mvsphere-iso: \x1b[38;5;41m "
-                      "System Package lnav should be installed\x1b[0m\x1b[0m\n")
-        expected_result = 'vsphere-iso:  System Package lnav should be installed\n'
-
-        result = action.format_results(test_string)
-        self.assertEqual(result, expected_result)
+        with self.assertRaises(ValueError):
+            action.run(**test_dict)
+        mock_packer.assert_called_once_with(test_dict['packerfile'],
+                                            exc=None,
+                                            only=None,
+                                            variables=None,
+                                            vars_file=None)

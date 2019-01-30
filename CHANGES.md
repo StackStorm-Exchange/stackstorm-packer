@@ -2,8 +2,9 @@
 
 # 0.3.2
 
-- Updated build actions to format the results dropping all ansi characters and to return error results also.
-- Added testing framework and tests for build action.
+- Updated build actions to format the results dropping all escape sequences and to return error results also.
+- Added testing framework and tests for all actions
+- Renamed inspect python file to fix issue with nose testing
   Contributed by Bradley Bishop (Encore Technologies)
 
 # 0.3.0

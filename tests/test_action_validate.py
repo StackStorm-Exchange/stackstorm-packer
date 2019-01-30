@@ -13,26 +13,25 @@
 # See the License for the specific language governing permissions and
 
 import mock
-from sh import ErrorReturnCode
 
 from packer_base_action_test_case import PackerBaseActionTestCase
 from st2common.runners.base_action import Action
 from lib.actions import BaseAction
 
-from build import BuildAction
+from validate import ValidateAction
 
 __all__ = [
-    'BuildActionTestCase'
+    'ValidateActionTestCase'
 ]
 
 
-class BuildActionTestCase(PackerBaseActionTestCase):
+class ValidateActionTestCase(PackerBaseActionTestCase):
     __test__ = True
-    action_cls = BuildAction
+    action_cls = ValidateAction
 
     def test_init(self):
         action = self.get_action_instance({})
-        self.assertIsInstance(action, BuildAction)
+        self.assertIsInstance(action, ValidateAction)
         self.assertIsInstance(action, BaseAction)
         self.assertIsInstance(action, Action)
 
@@ -41,9 +40,8 @@ class BuildActionTestCase(PackerBaseActionTestCase):
         action = self.get_action_instance(self.blank_config)
         test_dict = {'packerfile': 'test/file/packer'}
 
-        expected_result = "Test Build"
-        mock_build_return = mock.Mock(stdout=expected_result, status="success")
-        mock_packer.return_value.build.return_value = mock_build_return
+        expected_result = "Expected Result"
+        mock_packer.return_value.validate.return_value = expected_result
 
         result = action.run(**test_dict)
         self.assertEqual(result, expected_result)
@@ -52,21 +50,18 @@ class BuildActionTestCase(PackerBaseActionTestCase):
                                             only=None,
                                             variables=None,
                                             vars_file=None)
-        mock_packer.return_value.build.assert_called_once_with(parallel=True,
-                                                              debug=False,
-                                                              force=False)
+        mock_packer.return_value.validate.assert_called_once_with(syntax_only=False)
 
     @mock.patch('lib.actions.BaseAction.packer')
     def test_run_success_with_input_overrides(self, mock_packer):
         action = self.get_action_instance(self.blank_config)
         test_dict = {'packerfile': 'test/file/packer',
-                    'debug': True,
+                    'syntax_only': True,
                     'exclude': True,
                     'variables': {'test': 'test'}}
 
-        expected_result = "Test Build"
-        mock_build_return = mock.Mock(stdout=expected_result, status="success")
-        mock_packer.return_value.build.return_value = mock_build_return
+        expected_result = "Expected Result"
+        mock_packer.return_value.validate.return_value = expected_result
 
         result = action.run(**test_dict)
         self.assertEqual(result, expected_result)
@@ -75,43 +70,21 @@ class BuildActionTestCase(PackerBaseActionTestCase):
                                             only=None,
                                             variables=test_dict['variables'],
                                             vars_file=None)
-        mock_packer.return_value.build.assert_called_once_with(parallel=True,
-                                                              debug=True,
-                                                              force=False)
+        mock_packer.return_value.validate.assert_called_once_with(syntax_only=True)
 
     @mock.patch('lib.actions.BaseAction.packer')
     def test_run_error(self, mock_packer):
         action = self.get_action_instance(self.blank_config)
         test_dict = {'packerfile': 'test/file/packer'}
 
-        expected_result = "Test Build"
-        mock_error = ErrorReturnCode(stdout=expected_result,
-                                    full_cmd="",
-                                    stderr="")
+        mock_packer.return_value.validate.side_effect = Exception("ERROR")
 
-        mock_packer.return_value.build.side_effect = mock_error
+        with self.assertRaises(Exception):
+            action.run(**test_dict)
 
-        result = action.run(**test_dict)
-        self.assertEqual(result, (False, expected_result))
         mock_packer.assert_called_once_with(test_dict['packerfile'],
                                             exc=None,
                                             only=None,
                                             variables=None,
                                             vars_file=None)
-
-    def test_format_results_success(self):
-        action = self.get_action_instance()
-        test_string = "\x1b[1;32mTest_string\x1b[0m"
-        expected_result = "Test_string"
-
-        result = action.format_results(test_string)
-        self.assertEqual(result, expected_result)
-
-    def test_format_results_failed(self):
-        action = self.get_action_instance()
-        test_string = ("\x1b[0;32mvsphere-iso: \x1b[38;5;41m "
-                      "System Package lnav should be installed\x1b[0m\x1b[0m\n")
-        expected_result = 'vsphere-iso:  System Package lnav should be installed\n'
-
-        result = action.format_results(test_string)
-        self.assertEqual(result, expected_result)
+        mock_packer.return_value.validate.assert_called_once_with(syntax_only=False)
