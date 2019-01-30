@@ -93,7 +93,7 @@ class BuildActionTestCase(PackerBaseActionTestCase):
         mock_packer.return_value.build.side_effect = mock_error
 
         result = action.run(**test_dict)
-        self.assertEqual(result, (False, expected_result))
+        self.assertEqual(result, (False, str(expected_result)))
         mock_packer.assert_called_once_with(test_dict['packerfile'],
                                             exc=None,
                                             only=None,

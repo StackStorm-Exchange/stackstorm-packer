@@ -35,6 +35,6 @@ class BuildAction(BaseAction):
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
 
         # Drop all the ansi escape sequences and return the results
-        result_string = ansi_escape.sub('', result_string)
+        result_string = ansi_escape.sub('', str(result_string))
 
         return result_string
