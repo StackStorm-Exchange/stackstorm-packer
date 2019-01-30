@@ -84,10 +84,10 @@ class BuildActionTestCase(PackerBaseActionTestCase):
         action = self.get_action_instance(self.blank_config)
         test_dict = {'packerfile': 'test/file/packer'}
 
-        expected_result = "Test Build"
+        expected_result = 'Test Build'
         mock_error = ErrorReturnCode(stdout=expected_result,
-                                    full_cmd="Test_cmd",
-                                    stderr="Test_stderr")
+                                    full_cmd='',
+                                    stderr='')
 
         mock_packer.return_value.build.side_effect = mock_error
 
