@@ -84,7 +84,8 @@ class BuildActionTestCase(PackerBaseActionTestCase):
         action = self.get_action_instance(self.blank_config)
         test_dict = {'packerfile': 'test/file/packer'}
 
-        expected_result = 'Test Build'
+        # Made a bytes string to allow encodding and decodding to pass python 3 test
+        expected_result = b'Test Build'
         mock_error = ErrorReturnCode(stdout=expected_result,
                                     full_cmd='',
                                     stderr='')
