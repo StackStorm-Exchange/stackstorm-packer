@@ -1,0 +1,4 @@
+---
+atlas_token: "test"
+variables: {'test': 'test-value'}
+exec_path: "/usr/local/bin/packer"
