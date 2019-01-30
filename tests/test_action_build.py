@@ -87,8 +87,8 @@ class BuildActionTestCase(PackerBaseActionTestCase):
         # Made a bytes string to allow encodding and decodding to pass python 3 test
         expected_result = b'Test Build'
         mock_error = ErrorReturnCode(stdout=expected_result,
-                                    full_cmd='',
-                                    stderr='')
+                                    full_cmd=b'test_cmd',
+                                    stderr=b'test_stdout')
 
         mock_packer.return_value.build.side_effect = mock_error
 
