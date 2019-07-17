@@ -4,9 +4,11 @@ This integration pack allows StackStorm to control [Packer](http://packer.io),
 a tool for creating machine and container images for multiple platforms
 from a single source configuration.
 
+This pack works by invoking the Packer CLI directly on the StackStorm node.
+
 ## Setup
 
-* Install `packer` to be installed on all StackStorm nodes. Please follow the [HashiCorp Packer install guide](https://www.packer.io/intro/getting-started/install.html)
+* Install `packer` on all StackStorm nodes. Please follow the [HashiCorp Packer install guide](https://www.packer.io/intro/getting-started/install.html)
 * Configure the pack, see [Configuration](#Configuration) for additional details.
 
 ## Configuration
