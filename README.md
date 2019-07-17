@@ -7,7 +7,7 @@ from a single source configuration.
 ## Setup
 
 * Install `packer` to be installed on all StackStorm nodes. Please follow the [HashiCorp Packer install guide](https://www.packer.io/intro/getting-started/install.html)
-* Configure the pack, see [configuration](#Configuration) for additional details.
+* Configure the pack, see [Configuration](#Configuration) for additional details.
 
 ## Configuration
 
@@ -16,7 +16,7 @@ to `/opt/stackstorm/configs/packer.yaml` and edit as required.
 
 It may contain this configuration:
 
-* `exec_path` - full path to packer binary (default: /usr/local/bin/packer)
+* `exec_path` - full path to packer binary (default: `/usr/local/bin/packer`)
 * `atlas_token` - Hashicorp Atlas token, needed for `push` action.
 * `variables` - variables passed to Packer. Takes a dict
 
