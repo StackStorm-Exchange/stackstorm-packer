@@ -4,8 +4,12 @@ This integration pack allows StackStorm to control [Packer](http://packer.io),
 a tool for creating machine and container images for multiple platforms
 from a single source configuration.
 
-Requires `packer` to be installed on Worker nodes. See _configuration_ for
-additional details.
+This pack works by invoking the Packer CLI directly on the StackStorm node.
+
+## Setup
+
+* Install `packer` on all StackStorm nodes. Please follow the [HashiCorp Packer install guide](https://www.packer.io/intro/getting-started/install.html)
+* Configure the pack, see [Configuration](#Configuration) for additional details.
 
 ## Configuration
 
@@ -14,7 +18,7 @@ to `/opt/stackstorm/configs/packer.yaml` and edit as required.
 
 It may contain this configuration:
 
-* `exec_path` - full path to packer binary (default: /usr/local/bin/packer)
+* `exec_path` - full path to packer binary (default: `/usr/local/bin/packer`)
 * `atlas_token` - Hashicorp Atlas token, needed for `push` action.
 * `variables` - variables passed to Packer. Takes a dict
 
