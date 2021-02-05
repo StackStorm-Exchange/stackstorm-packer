@@ -1,5 +1,9 @@
 # Change Log
 
+# 1.0.0
+
+* Drop Python 2.7 support
+
 # 0.3.2
 
 - Updated build actions to format the results dropping all escape sequences and to return error results also.
